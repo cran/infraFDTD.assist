@@ -1,0 +1,10 @@
+e8e06d084b7d68a400f4e312cfce17fb *DESCRIPTION
+95b8423ba515dddb2925c52d267f3474 *NAMESPACE
+80130b8fb061cd54c7821f684da5b66a *R/MakeSnapshotInfo.R
+bad26a3237931a893b3ced5f09a71663 *R/MakeSnapshots.R
+0443d3f95239a66139a1b64955863904 *R/PrepFiles.R
+78ffa1f449002496605f6c38a1178ebf *build/partial.rdb
+1abc880a846ab3cd0d14c9d1d68a477c *man/MakeSnapshotInfo.Rd
+bb9dc7b5a818944461b3d4bcb9bc3702 *man/MakeSnapshots.Rd
+a31c366506b3638520fa2c1efb4b96f4 *man/PrepFiles.Rd
+ab80ce2e2cbae3f6c393c5087a43b4b4 *man/infraFDTD.assist-package.Rd
