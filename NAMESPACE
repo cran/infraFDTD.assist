@@ -4,3 +4,4 @@ exportPattern("^[[:alpha:]]+")
   importFrom("graphics", "contour", "image", "legend", "lines", "par")
   importFrom("utils", "read.table", "write.table")
 
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")

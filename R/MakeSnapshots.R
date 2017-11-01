@@ -1,5 +1,37 @@
 MakeSnapshots <-
 function(info, outputdir = './anim', prefix = 'snapshot', nums = 1:info$N, dt = 0.1, makesec1 = TRUE, makesec2 = TRUE, makesurf = TRUE, res = 96, fn_topomap = 'topomap.png', width = 480, height = NaN, asp = 1, pointsize = 12){
+
+
+prettytitle = function(x, m1, m2){
+  ## function to print the time as a plot title with the right formatting (spaces before first non-zero, leading zero before decimal, right number of decimals, right width)
+  ## x: number to print
+  ## m1: smallest possible increment between numbers
+  ## m2: largest possible number
+
+  digits = getOption('digits')
+  options(digits = 22)
+  nd2 = floor(log(m2, 10)) + 1 ## number of digits before decimal in largest number
+  nd1 = nchar(as.character(m1)) - regexpr('\\.', m1)
+
+  ## make a number with the right number of decimal places and leading zeroes
+  start = 7 - (nd2-1)
+  end = 7 + nd1 + (m1 < 1)
+  y=substr(as.character(x+1e6+1e-6), start, end)
+
+  ## substitute spaces for leading zeroes when appropriate
+  if(nd2 >= 2){
+    for(i in 1:(nd2-1)){
+      if(x < 10^(nd2-i)){
+        substr(y, i, i) = ' '
+      }
+    }
+  }
+  options(digits = digits)
+  y
+}
+
+
+
   N = info$N
   topo = info$topo
   coords_sec1 = info$coords_sec1
@@ -15,8 +47,12 @@ function(info, outputdir = './anim', prefix = 'snapshot', nums = 1:info$N, dt = 
   
   if(is.na(height)){
     width_plot = width - res * (mai[2]+mai[4])
-    height_sec1 = diff(range(zz_sec1))/max(surfline_sec1$h) * width_plot + res * (mai[1]+mai[3])
-    height_sec2 = diff(range(zz_sec2))/max(dist_sec2) * width_plot + res * (mai[1]+mai[3])
+    if(makesec1){
+      height_sec1 = diff(range(zz_sec1))/max(surfline_sec1$h) * width_plot + res * (mai[1]+mai[3])
+    }
+    if(makesec2){
+      height_sec2 = diff(range(zz_sec2))/max(dist_sec2) * width_plot + res * (mai[1]+mai[3])
+    }
     height_surf = diff(range(topo$y))/diff(range(topo$x)) * width_plot + res * (mai[1]+mai[3])
   }
   
@@ -36,8 +72,10 @@ function(info, outputdir = './anim', prefix = 'snapshot', nums = 1:info$N, dt = 
   for(j in nums){
     ndigits_fn = 1 + floor(log(N, 10))
     png_num = formatC(j, flag = 0, width = ndigits_fn)
-    nd = (dt < 1) + ceiling(log(N*dt, 10)) - floor(log(dt, 10)) 
-    main = paste(formatC(j*dt, width = nd), 's')
+    ## formatC is a pain. use custom function prettytitle instead.
+    ##    nd = (dt < 1) + ceiling(log(N*dt, 10)) - floor(log(dt, 10)) 
+    ##    main = paste(formatC(j*dt, width = nd), 's')
+    main = prettytitle(j*dt, dt, N*dt)
     print(paste(j, 'of', N, ': t =', main))
     
     fn_sec1 = info$fn_sec1list[j]
@@ -95,3 +133,5 @@ function(info, outputdir = './anim', prefix = 'snapshot', nums = 1:info$N, dt = 
     }# if makesurf
   } #for k
 }
+
+

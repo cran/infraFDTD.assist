@@ -11,7 +11,8 @@ Generate Input Files for infraFDTD
 }
 \usage{
 PrepFiles(X, sta, dh, fn_topo, fn_c, fn_rho, fn_sta, c = 335, rho = 1.2,
-xlim = range(X$x), ylim = range(X$y), c_function = NA, rho_function = NA)
+xlim = range(X$x), ylim = range(X$y), c_function = NA, rho_function =
+NA, z_extent = NaN)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -70,7 +71,11 @@ xlim = range(X$x), ylim = range(X$y), c_function = NA, rho_function = NA)
   \item{rho_function}{
     Function giving density as a function of height. Consider using
     approxfun() to generate this from an atmospheric profile.
-}
+  }
+  \item{z_extent}{
+    Vertical thickness of model (m); must be greater than total relief in model.
+  }
+
 }
 \details{
   This function does not generate a param.h file; however, it does print

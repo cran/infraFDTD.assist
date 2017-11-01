@@ -26,30 +26,44 @@ function(inputdir = './snapshots', dframe = 20, N = 400, xs, ys, zs, makesec1 = 
   print('Reading coord_sur.txt')
   coords_surf=read.table(paste(inputdir, '/coord_sur.txt', sep = ''), col.names = c('x', 'y', 'z'))
 
-  ## calculate surface lines
-  print('Calculating surface line 1')
-  surfline_sec1 = unique(coords_sec1[,1:2])
-  for(i in 1:length(surfline_sec1[,1])){
-    surfline_sec1[i,3] = (coords_surf[,3])[coords_surf[,1] == surfline_sec1[i,1] & coords_surf[,2] == surfline_sec1[i,2]]
+  ## calculate surface linesM
+  if(makesec1){
+    print('Calculating surface line 1')
+    surfline_sec1 = unique(coords_sec1[,1:2]) ## calculates the unique x-y pairs that are repeated for a range of z
+    pb = txtProgressBar(min = 0, max = length(surfline_sec1[,1]), initial = 0, width = 20)
+    print('                   | 100%')
+    for(i in 1:length(surfline_sec1[,1])){
+      surfline_sec1[i,3] = (coords_surf[,3])[coords_surf[,1] == surfline_sec1[i,1] & coords_surf[,2] == surfline_sec1[i,2]]
+      setTxtProgressBar(pb, i)
+    }
+    names(surfline_sec1) = c('x', 'y', 'z')
+    surfline_sec1$h = sqrt((surfline_sec1$x-surfline_sec1$x[1])^2 + (surfline_sec1$y-surfline_sec1$y[1])^2)
+  }else{
+    surfline_sec1 = list(h = numeric(), x = numeric(), y = numeric(), z = numeric())
   }
-  names(surfline_sec1) = c('x', 'y', 'z')
-  surfline_sec1$h = sqrt((surfline_sec1$x-surfline_sec1$x[1])^2 + (surfline_sec1$y-surfline_sec1$y[1])^2)
-  
-  print('Calculating surface line 2')
-  surfline_sec2 = unique(coords_sec2[,1:2])
-  for(i in 1:length(surfline_sec2[,1])){
-    surfline_sec2[i,3] = (coords_surf[,3])[coords_surf[,1] == surfline_sec2[i,1] & coords_surf[,2] == surfline_sec2[i,2]]
+
+  if(makesec2){
+    print('Calculating surface line 2')
+    surfline_sec2 = unique(coords_sec2[,1:2]) ## calculates the unique x-y pairs that are repeated for a range of z
+    pb = txtProgressBar(min = 0, max = length(surfline_sec2[,1]), initial = 0, width = 20)
+    print('                   | 100%')
+    for(i in 1:length(surfline_sec2[,1])){
+      surfline_sec2[i,3] = (coords_surf[,3])[coords_surf[,1] == surfline_sec2[i,1] & coords_surf[,2] == surfline_sec2[i,2]]
+      setTxtProgressBar(pb, i)
+    }
+    names(surfline_sec2) = c('x', 'y', 'z')
+    surfline_sec2$h = sqrt((surfline_sec2$x-surfline_sec2$x[1])^2 + (surfline_sec2$y-surfline_sec2$y[1])^2)
+  }else{
+    surfline_sec2 = list(h = numeric(), x = numeric(), y = numeric(), z = numeric())
   }
-  names(surfline_sec2) = c('x', 'y', 'z')
-  surfline_sec2$h = sqrt((surfline_sec2$x-surfline_sec2$x[1])^2 + (surfline_sec2$y-surfline_sec2$y[1])^2)
 
   ## Get surface elevations from coords_surf
   topo = list()
   topo$x = unique(coords_surf$x)
   topo$y = unique(coords_surf$y)
-  topo$z = matrix(coords_surf$z,nrow=length(topo$x))
-  topo$XX = matrix(coords_surf$x,nrow=length(topo$x))
-  topo$YY = matrix(coords_surf$y,nrow=length(topo$x))
+  topo$z = matrix(coords_surf$z, nrow=length(topo$x))
+  topo$XX = matrix(coords_surf$x, nrow=length(topo$x))
+  topo$YY = matrix(coords_surf$y, nrow=length(topo$x))
 
   dev.new()
   image(topo, col = topo.colors(30), asp = 1, xlab = 'Easting', ylab = 'Northing', main = 'Section Lines', useRaster = TRUE)
